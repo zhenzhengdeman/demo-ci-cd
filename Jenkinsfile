@@ -3,21 +3,15 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Install') {
             steps {
-                echo "Building project..."
+                sh 'pip install flask'
             }
         }
 
-        stage('Test') {
+        stage('Run App') {
             steps {
-                echo "Running tests..."
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo "Deploy stage..."
+                sh 'python app.py &'
             }
         }
 

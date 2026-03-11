@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.12-slim'
-        }
-    }
+    agent any
 
     stages {
 
@@ -15,13 +11,28 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'pip3 install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
                 sh 'pytest tests'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'echo "Build step finished"'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                pkill -f app.py || true
+                nohup python3 app.py > app.log 2>&1 &
+                '''
             }
         }
 

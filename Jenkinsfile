@@ -23,7 +23,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-		. venv/bin/avtivate
+		. venv/bin/activate
 		pytest tests
 		'''
             }

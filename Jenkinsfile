@@ -3,15 +3,37 @@ pipeline {
 
     stages {
 
-        stage('Install') {
+        stage('Checkout') {
             steps {
-                sh 'pip install flask'
+                checkout scm
             }
         }
 
-        stage('Run App') {
+        stage('Install Dependencies') {
             steps {
-                sh 'python app.py &'
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'pytest tests'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t demo-ci-cd:latest .'
+            }
+        }
+
+        stage('Deploy Docker Container') {
+            steps {
+                sh '''
+                docker stop demo-ci-cd || true
+                docker rm demo-ci-cd || true
+                docker run -d --name demo-ci-cd -p 5000:5000 demo-ci-cd:latest
+                '''
             }
         }
 
